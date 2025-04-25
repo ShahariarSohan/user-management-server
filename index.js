@@ -18,7 +18,6 @@ app.listen(port, () => {
 
 const uri = `mongodb+srv://${process.env.USER_DB}:${process.env.USER_PASS}@cluster0.3fkmwyj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-console.log(process.env.USER_PASS);
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -32,6 +31,15 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const coffeeCollection = client.db("insertDB").collection("coffees");
+
+    app.post("/coffees", async (req, res) => {
+      const coffee = req.body;
+      console.log(coffee);
+      const result = await coffeeCollection.insertOne(coffee);
+      res.send(result);
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
