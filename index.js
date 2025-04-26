@@ -37,7 +37,6 @@ async function run() {
     //   get multiple
     app.get("/coffees/:email", async (req, res) => {
       const email = req.params.email;
-      console.log(email);
       const query = { email };
       const cursor = coffeeCollection.find(query);
       const result = await cursor.toArray();
