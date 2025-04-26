@@ -35,13 +35,16 @@ async function run() {
     const coffeeCollection = client.db("insertDB").collection("coffees");
 
     //   get multiple
-    app.get("/coffees", async (req, res) => {
-      const cursor = coffeeCollection.find();
+    app.get("/coffees/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { email };
+      const cursor = coffeeCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     });
     //get single
-    app.get("/coffees/:id", async (req, res) => {
+    app.get("/coffee/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await coffeeCollection.findOne(query);
@@ -51,7 +54,6 @@ async function run() {
     //  insert single
     app.post("/coffees", async (req, res) => {
       const coffee = req.body;
-      console.log(coffee);
       const result = await coffeeCollection.insertOne(coffee);
       res.send(result);
     });
@@ -64,7 +66,7 @@ async function run() {
       res.send(result);
     });
     //   update
-    app.put("/coffees/:id", async (req, res) => {
+    app.put("/coffee/:id", async (req, res) => {
       const id = req.params.id;
       const coffee = req.body;
       const filter = { _id: new ObjectId(id) };
@@ -78,6 +80,7 @@ async function run() {
           category: coffee.category,
           photoURL: coffee.photoURL,
           details: coffee.details,
+          email: coffee.email,
         },
       };
       const result = await coffeeCollection.updateOne(
